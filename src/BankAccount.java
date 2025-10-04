@@ -1,6 +1,4 @@
-import java.util.Currency;
-
-public class BankAccount {
+abstract class BankAccount{
     private String accNo;
     protected double balance;
 
@@ -9,15 +7,7 @@ public class BankAccount {
         this.balance=balance;
     }
 
-    public void setaccNo(String accNo){
-        this.accNo=accNo;
-    }
-
-    public void setBalance(int balance){
-        this.balance=balance;
-    }
-
-    public String getAccNo(){
+    public String getaccNo(){
         return accNo;
     }
 
@@ -25,70 +15,67 @@ public class BankAccount {
         return balance;
     }
 
+    public void setaccNo(String accNo){
+        this.accNo=accNo;
+    }
+
+    public void setBalance(double balance){
+        this.balance=balance;
+    }
+
     public void deposit(double amount){
-        if (amount>0){
-            balance+=amount;
+        if (amount>=0){
+            balance += amount;
         }else {
-            System.out.println("enter correct amount");
+            System.out.println("Incorrect value");
         }
+        System.out.println("Deposited amount is : " + amount);
+    }
 
-        System.out.println("Deposited amount is : " + amount + " and the remaining balance is : " + balance);
+    abstract void withdraw(double amount);
+}
+class SavingAccount extends BankAccount{
+    private double interestRate;
+
+    public SavingAccount(String accNo , double balance , double interestRate){
+            super(accNo , balance);
+            this.interestRate=interestRate;
     }
 
     public void withdraw(double amount){
-        if (amount<balance){
-            balance-=amount;
-            System.out.println("withdraw amount :" + amount + " and the balace is : " + balance);
-        }
-        else {
-            System.out.println("In sufficient balance");
-        }
-
-    }
-}
-
-class SavingsAccount extends BankAccount{
-
-    private double intrestRate;
-
-    public SavingsAccount(String accno , double balance , double intrestRate){
-        super(accno , balance);
-        this.intrestRate=intrestRate;
-    }
-
-    public void addInterest(){
-        double interest = balance / intrestRate * 100;
-        balance += interest;
-        System.out.println("Interest amount is : " + interest + " Total would be : " + balance);
-    }
-}
-
-
-class CurrectAccount extends BankAccount{
-    private double overdraft;
-
-    public  CurrectAccount(String accNo , double balance  , double overdraft){
-        super(accNo , balance);
-        this.overdraft=overdraft;
-    }
-
-    @Override
-    public void withdraw(double amount){
-        if (amount>0 || amount<=balance + overdraft){
-            balance-=amount;
-        }else{
-            System.out.println("Overdraft amount is exceeded");
+        if (amount>=balance){
+            System.out.println("Amount withdraw from saving account is  : " + amount + " And the remaining balance is : " + balance);
+        }else {
+            System.out.println("Insufficient funds , Please check the balance and Try again");
         }
     }
-}
 
-
-class Main{
-    public static void main(String[] args) {
-        BankAccount b1 = new BankAccount("10001" , 0);
-        SavingsAccount s1= new SavingsAccount("10002" ,0,5);
-        CurrectAccount c1 = new CurrectAccount("4000" ,5000,3000);
-        s1.deposit(4000);
-        s1.withdraw(500);
+    public void addInterest(double amount){
+        interestRate = amount * 5 / 100;
+        balance +=interestRate;
+        System.out.println("Interest amount is " + interestRate + " and after the intrest is : " + balance);
     }
 }
+
+class CurrentAccount extends BankAccount{
+    private double overDraft;
+
+        public  CurrentAccount(String accNo , double balance ,double overDraft){
+            super(accNo, balance);
+            this.overDraft=overDraft;
+        }
+
+    void withdraw(double amount){
+        if (amount <= balance + overDraft){
+            balance -= amount;
+        }else {
+            System.out.println("Overdraft limit crossed");
+        }
+    }
+
+    void setOverDraft(double overDraft){
+        this.overDraft=overDraft;
+    }
+}
+
+
